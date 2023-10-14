@@ -7,7 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 
 
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class CommonRateController {
 
     private final TimePathService timePathService;
@@ -30,6 +31,7 @@ public class CommonRateController {
 
     @GetMapping("/offices/optimal")
     public ResponseEntity<?> getCommonRates(@RequestBody InfoToGetRates infoToGetRates){
+        log.info("getCommonRates officesIds:{}", infoToGetRates.getId());
         Map<Long, Double> commonRatesMap;
         try {
             Map<Long, Long> idsToTime = timePathService.getRatesByRoads(infoToGetRates);

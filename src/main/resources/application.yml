@@ -1,2 +1,4 @@
 load_rates_service:
-  url: http://localhost:8080
+  url: http://localhost:8081
+api_key:
+  AIzaSyDz7Oy1Ak3Wi8O8aNZnvwMsAUi1CXumO_c
