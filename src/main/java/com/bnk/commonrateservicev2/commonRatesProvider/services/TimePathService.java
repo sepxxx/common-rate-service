@@ -15,10 +15,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TimePathService {
 
-    private Map<Long, Long> times = new HashMap<>();
+    private Map<Long, Long> times;
     private final Parser parser;
 
     public Map<Long, Long> getRatesByRoads(InfoToGetRates infoToGetRates) throws JsonProcessingException {
+        times = new HashMap<>();
         for (int i = 0; i < infoToGetRates.getId().size(); i++){
             Container container = parser.request(
                     infoToGetRates.getCoords().get(i).getLat(),
