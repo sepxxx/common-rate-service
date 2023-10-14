@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ import java.util.Map;
 public class FormCommonRateService {
     GetLoadRatesService getLoadRatesService;
 
-    public Map<Long, Double> getCommonRatesMap(Map<Long, Long> idsToTime, String faceType) {
+    public Map<Long, Double> getCommonRatesMap(Map<Long, Long> idsToTime, String faceType, String moveType) {
         log.info("getCommonRatesMap idsToTime:{} faceType:{}", idsToTime, faceType);
         Map<Long, Double> commonRatesMap = getLoadRatesService.getLoadRates(
                 idsToTime.keySet().stream().toList(),
@@ -29,7 +30,7 @@ public class FormCommonRateService {
         for(Long id:idsToTime.keySet()) {
             Double loadRate = commonRatesMap.get(id);
             Long timeInSecs = idsToTime.get(id);
-            Double timeRate = formRateForTime(timeInSecs);
+            Double timeRate = formRateForTime(timeInSecs, moveType);
             log.info("getCommonRatesMap timeRate:{}", timeRate);
             commonRatesMap.put(id, (loadRate+timeRate)/2);
         }
@@ -37,16 +38,28 @@ public class FormCommonRateService {
         return commonRatesMap;
     }
 
-    public Double formRateForTime(Long timeInSecs) {
+    public Double formRateForTime(Long timeInSecs, String moveType) {
         double timeRate;
-        if(timeInSecs <=180) {
-            timeRate=100;
-        } else if(timeInSecs<=360){
-            timeRate =70;
-        } else if(timeInSecs<=720) {
-            timeRate=50;
+        if(Objects.equals(moveType, "walking")) {
+            if (timeInSecs <= 360) {
+                timeRate = 100;
+            } else if (timeInSecs <= 720) {
+                timeRate = 70;
+            } else if (timeInSecs <= 1440) {
+                timeRate = 50;
+            } else {
+                timeRate = 30;
+            }
         } else {
-            timeRate=30;
+            if (timeInSecs <= 360) {
+                timeRate = 100;
+            } else if (timeInSecs <= 1200) { //20min
+                timeRate = 70;
+            } else if (timeInSecs <= 1500) { //25min
+                timeRate = 50;
+            } else {
+                timeRate = 30;
+            }
         }
         return timeRate;
     }

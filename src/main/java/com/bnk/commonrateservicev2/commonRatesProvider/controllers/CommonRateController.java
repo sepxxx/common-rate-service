@@ -35,7 +35,9 @@ public class CommonRateController {
         Map<Long, Double> commonRatesMap;
         try {
             Map<Long, Long> idsToTime = timePathService.getRatesByRoads(infoToGetRates);
-            commonRatesMap = formCommonRateService.getCommonRatesMap(idsToTime, infoToGetRates.getServiceType());
+            commonRatesMap = formCommonRateService.getCommonRatesMap(idsToTime,
+                    infoToGetRates.getServiceType(),
+                    infoToGetRates.getMoveType());
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
