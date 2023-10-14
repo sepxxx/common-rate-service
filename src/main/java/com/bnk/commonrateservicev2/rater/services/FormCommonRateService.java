@@ -5,6 +5,7 @@ import com.bnk.commonrateservicev2.loadRatesProvider.services.GetLoadRatesServic
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -12,10 +13,12 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class FormCommonRateService {
     GetLoadRatesService getLoadRatesService;
 
     public Map<Long, Double> getCommonRatesMap(Map<Long, Long> idsToTime, String faceType) {
+        log.info("getCommonRatesMap idsToTime:{} faceType:{}", idsToTime, faceType);
         Map<Long, Double> commonRatesMap = getLoadRatesService.getLoadRates(
                 idsToTime.keySet().stream().toList(),
                 faceType
@@ -27,9 +30,10 @@ public class FormCommonRateService {
             Double loadRate = commonRatesMap.get(id);
             Long timeInSecs = idsToTime.get(id);
             Double timeRate = formRateForTime(timeInSecs);
-
+            log.info("getCommonRatesMap timeRate:{}", timeRate);
             commonRatesMap.put(id, (loadRate+timeRate)/2);
         }
+        log.info("getCommonRatesMap commonRatesMap:{}", commonRatesMap);
         return commonRatesMap;
     }
 
